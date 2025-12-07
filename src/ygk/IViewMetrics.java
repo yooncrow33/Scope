@@ -1,6 +1,6 @@
-package ygk.view;
+package ygk;
 
-public interface IViewMetrics {
+interface IViewMetrics {
     int getWindowWidth();
     int getWindowHeight();
     double getScaleX();

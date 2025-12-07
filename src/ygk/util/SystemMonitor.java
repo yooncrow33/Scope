@@ -1,10 +1,10 @@
-package ygk;
+package ygk.util;
 
-import ygk.view.ISystemMonitor;
 import com.sun.management.OperatingSystemMXBean;
 import java.lang.management.ManagementFactory;
 
 public class SystemMonitor implements ISystemMonitor {
+
     private final OperatingSystemMXBean mxbean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 
     private long totalMemory;
@@ -12,7 +12,7 @@ public class SystemMonitor implements ISystemMonitor {
     private long usedMemory;
     private int cpuPercentage;
 
-    public void updateMetrics() {
+    public void update() {
         Runtime runtime = Runtime.getRuntime();
         long totalBytes = runtime.totalMemory();
         long freeBytes = runtime.freeMemory();

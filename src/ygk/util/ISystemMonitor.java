@@ -1,4 +1,4 @@
-package ygk;
+package ygk.util;
 
 interface ISystemMonitor {
     long getTotalMemory();

@@ -1,6 +1,6 @@
-package ygk.view;
+package ygk;
 
-public interface IMouse {
+interface IMouse {
     int getVirtualMouseX();
     int getVirtualMouseY();
 }

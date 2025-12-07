@@ -1,4 +1,4 @@
-package base;
+package ygk;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,8 +9,9 @@ import java.awt.event.MouseMotionAdapter;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import base.view.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.lang.Runnable;
 
 public abstract class Base extends JPanel implements IFrameSize {
 
@@ -21,8 +22,15 @@ public abstract class Base extends JPanel implements IFrameSize {
 
     protected ViewMetrics viewMetrics;
 
+    public long tick;
+    int lastPlayTime;
+    int totalPlayTime = 0;
+    int sessionPlayTime = 0;
+
+    private final List<Runnable> updatables = new ArrayList<>();
+
     public Base(String title) {
-        frame = new JFrame(title);
+        frame = new JFrame(title + "(Powered by Yooncrow Game Kit)");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(true);
 
@@ -93,14 +101,27 @@ public abstract class Base extends JPanel implements IFrameSize {
             update(deltaTime);
             SwingUtilities.invokeLater(this::repaint);
 
+            for (Runnable updatable : updatables) {
+                updatable.run();
+            }
+
         }, 0, 16, TimeUnit.MILLISECONDS);
     }
 
     protected abstract void update(double deltaTime);
-
     protected abstract void initGame();
-
     protected abstract void render(Graphics g);
+
+    public final int getMouseX() { return viewMetrics.getVirtualMouseX(); }
+    public final int getMouseY() { return viewMetrics.getVirtualMouseY(); }
+    public final double getScaleX() { return viewMetrics.getScaleX(); }
+    public final double getScaleY() { return viewMetrics.getScaleY(); }
+    public final int getWindowHeight() { return viewMetrics.getWindowHeight(); }
+    public final int getWindowWidth() { return viewMetrics.getWindowWidth(); }
+
+    protected void registerUpdatable(Runnable updateLogic) {
+        this.updatables.add(updateLogic);
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -118,7 +139,7 @@ public abstract class Base extends JPanel implements IFrameSize {
         g.fillRect(-500,1060,3920,200);
         g.setFont(new Font("Arial", Font.PLAIN, 15));
         g.setColor(Color.white);
-        g.drawString("Powered by Yooncrow Game Kit", 10 , 1075);
+        g.drawString("Powered by Yooncrow Game Kit          Version = Alpha 1.0", 10 , 1075);
     }
 
     @Override public int getComponentWidth() { return this.getWidth(); }

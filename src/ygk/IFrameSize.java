@@ -1,6 +1,6 @@
-package ygk.view;
+package ygk;
 
-public interface IFrameSize {
+interface IFrameSize {
     int getComponentWidth();
     int getComponentHeight();
 }
