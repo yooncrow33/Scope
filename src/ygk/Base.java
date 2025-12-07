@@ -139,7 +139,7 @@ public abstract class Base extends JPanel implements IFrameSize {
         g.fillRect(-500,1060,3920,200);
         g.setFont(new Font("Arial", Font.PLAIN, 15));
         g.setColor(Color.white);
-        g.drawString("Powered by Yooncrow Game Kit          Version = Alpha 1.0", 10 , 1075);
+        g.drawString("Powered by Yooncrow Game Kit          Version = Alpha 1.1", 10 , 1075);
     }
 
     @Override public int getComponentWidth() { return this.getWidth(); }
