@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="12:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/12_jar</output-path>
+    <root id="archive" name="YooncrowGameKit.jar">
+      <element id="module-output" name="YooncrowGameKit" />
+    </root>
+  </artifact>
+</component>

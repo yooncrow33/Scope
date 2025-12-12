@@ -39,9 +39,6 @@ public abstract class Base extends JPanel implements IFrameSize {
 
         frame.add(this);
         frame.setVisible(true);
-        this.setFocusable(true);
-        this.requestFocus();
-        this.requestFocusInWindow();
         frame.pack();
 
         this.addMouseMotionListener(new MouseMotionAdapter() {
@@ -91,7 +88,12 @@ public abstract class Base extends JPanel implements IFrameSize {
         SwingUtilities.invokeLater(() -> {
             // 모든 UI 이벤트 처리 후 (가장 안정적일 때)
             this.setFocusable(true);
-            this.requestFocusInWindow(); // 포커스 확보 (재차 요청)
+            this.requestFocusInWindow();
+            this.setFocusable(true);
+            this.requestFocus();
+            this.requestFocusInWindow();
+
+            // 포커스 확보 (재차 요청)
             this.initGame();             // <-- 여기에 initGame을 호출
         });
     }
@@ -180,7 +182,7 @@ public abstract class Base extends JPanel implements IFrameSize {
         g.fillRect(-500,1060,3920,200);
         g.setFont(new Font("Arial", Font.PLAIN, 15));
         g.setColor(Color.white);
-        g.drawString("Powered by Yooncrow Game Kit          Version = Alpha 1.3.2       2025.12.12", 10 , 1075);
+        g.drawString("Powered by Yooncrow Game Kit          Version = Alpha 1.3.3       2025.12.12", 10 , 1075);
     }
 
     @Override public int getComponentWidth() { return this.getWidth(); }
