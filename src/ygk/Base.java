@@ -39,6 +39,14 @@ public abstract class Base extends JPanel implements IFrameSize {
 
         frame.add(this);
         frame.setVisible(true);
+        frame.setFocusable(false);
+
+        this.setFocusable(true);
+        this.requestFocusInWindow();
+        this.setFocusable(true);
+        this.requestFocus();
+        this.requestFocusInWindow();
+
         frame.pack();
 
         this.addMouseMotionListener(new MouseMotionAdapter() {
@@ -182,7 +190,7 @@ public abstract class Base extends JPanel implements IFrameSize {
         g.fillRect(-500,1060,3920,200);
         g.setFont(new Font("Arial", Font.PLAIN, 15));
         g.setColor(Color.white);
-        g.drawString("Powered by Yooncrow Game Kit          Version = Alpha 1.3.3       2025.12.12", 10 , 1075);
+        g.drawString("Powered by Yooncrow Game Kit          Version = Alpha 1.3.4       2025.12.12", 10 , 1075);
     }
 
     @Override public int getComponentWidth() { return this.getWidth(); }
