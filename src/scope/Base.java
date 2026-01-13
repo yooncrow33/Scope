@@ -1,4 +1,13 @@
-package ygk;
+package scope;
+
+import scope.internal.effect.afterImage.AfterImageAccess;
+import scope.internal.effect.afterImage.AfterImageManager;
+import scope.internal.effect.popup.PopupAccess;
+import scope.internal.effect.popup.PopupManager;
+import scope.internal.systemMonitor.SystemMonitor;
+import scope.internal.tick.TickManager;
+import scope.internal.viewMetrics.IFrameSize;
+import scope.internal.viewMetrics.ViewMetrics;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,24 +27,27 @@ public abstract class Base extends JPanel implements IFrameSize {
     private boolean isResizing = false;
     private long lastTime;
 
-    protected ViewMetrics viewMetrics;
+    protected ViewMetrics a010ViewMetrics;
 
-    private TickManager tickManager = null;
-    private SystemMonitor systemMonitor = null;
-    private AfterImageManager afterImageManager = null;
+    private TickManager TickManager = null;
+    private SystemMonitor a000SystemMonitor = null;
+    private AfterImageManager e000AfterImageManager = null;
+    private AfterImageAccess e009AfterImageAccess;
+    private PopupManager popupManager = null;
+    private PopupAccess popupAccess;
 
     private final List<Runnable> updatables = new ArrayList<>();
     private final List<Consumer<Graphics>> renderables = new ArrayList<>();
 
     public Base(String title) {
-        frame = new JFrame(title + " (Powered by Yooncrow Game Kit)");
+        frame = new JFrame(title);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(true);
         setFocusable(true);
 
         frame.setPreferredSize((new Dimension(1280,720)));
 
-        viewMetrics = new ViewMetrics(this);
+        a010ViewMetrics = new ViewMetrics(this);
 
         frame.add(this);
         frame.setVisible(true);
@@ -52,7 +64,7 @@ public abstract class Base extends JPanel implements IFrameSize {
         this.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
-                viewMetrics.updateVirtualMouse(e.getX(),e.getY());
+                a010ViewMetrics.updateVirtualMouse(e.getX(),e.getY());
             }
         });
 
@@ -80,16 +92,16 @@ public abstract class Base extends JPanel implements IFrameSize {
                         frame.setSize(currentW, newH);
                     }
 
-                    viewMetrics.calculateViewMetrics();
+                    a010ViewMetrics.calculateViewMetrics();
                     EventQueue.invokeLater(() -> isResizing = false);
                 }
             }
         });
 
-        tickManager = new TickManager();
-        registerUpdatable(tickManager::update);
+        TickManager = new TickManager();
+        registerUpdatable(TickManager::update);
 
-        viewMetrics.calculateViewMetrics();
+        a010ViewMetrics.calculateViewMetrics();
 
         SwingUtilities.invokeLater(() -> {
             // 모든 UI 이벤트 처리 후 (가장 안정적일 때)
@@ -99,7 +111,7 @@ public abstract class Base extends JPanel implements IFrameSize {
             this.requestFocus();
             this.requestFocusInWindow();
 
-            initGame();
+            init();
 
             startGameLoop();
         });
@@ -126,17 +138,15 @@ public abstract class Base extends JPanel implements IFrameSize {
     }
 
     protected abstract void update(double deltaTime);
-    protected abstract void initGame();
+    protected abstract void init();
     protected abstract void render(Graphics g);
-    protected void addKeyAdapter(KeyListener kd) { this.addKeyListener(kd);
-        System.out.println("qnxdma");}
 
-    public final int getMouseX() { return viewMetrics.getVirtualMouseX(); }
-    public final int getMouseY() { return viewMetrics.getVirtualMouseY(); }
-    public final double getScaleX() { return viewMetrics.getScaleX(); }
-    public final double getScaleY() { return viewMetrics.getScaleY(); }
-    public final int getWindowHeight() { return viewMetrics.getWindowHeight(); }
-    public final int getWindowWidth() { return viewMetrics.getWindowWidth(); }
+    public final int getMouseX() { return a010ViewMetrics.getVirtualMouseX(); }
+    public final int getMouseY() { return a010ViewMetrics.getVirtualMouseY(); }
+    public final double getScaleX() { return a010ViewMetrics.getScaleX(); }
+    public final double getScaleY() { return a010ViewMetrics.getScaleY(); }
+    public final int getWindowHeight() { return a010ViewMetrics.getWindowHeight(); }
+    public final int getWindowWidth() { return a010ViewMetrics.getWindowWidth(); }
 
     protected void registerUpdatable(Runnable updateLogic) {
         this.updatables.add(updateLogic);
@@ -147,26 +157,39 @@ public abstract class Base extends JPanel implements IFrameSize {
     }
 
     protected SystemMonitor getSystemMonitor() {
-        if (systemMonitor == null) {
-            systemMonitor = new SystemMonitor();
+        if (a000SystemMonitor == null) {
+            a000SystemMonitor = new SystemMonitor();
             // Base의 자동 업데이트 루프에 등록
-            registerUpdatable(systemMonitor::update);
+            registerUpdatable(a000SystemMonitor::update);
         }
-        return systemMonitor;
+        return a000SystemMonitor;
     }
 
-    protected AfterImageManager getAfterImageManager() {
-        if (afterImageManager == null) {
-            afterImageManager = new AfterImageManager();
+    protected PopupAccess getPopupManager() {
+        if (popupManager == null) {
+            popupManager = new PopupManager(getTickManager());
             // Base의 자동 업데이트/렌더 루프에 등록
-            registerUpdatable(afterImageManager::update);
-            registerRenderable(afterImageManager::draw);
+            registerUpdatable(popupManager::update);
+            registerRenderable(popupManager::draw);
+            popupAccess = popupManager;
         }
-        return afterImageManager;
+        return popupAccess;
     }
+
+    protected AfterImageAccess getAfterImageManager() {
+        if (e000AfterImageManager == null) {
+            e000AfterImageManager = new AfterImageManager();
+            // Base의 자동 업데이트/렌더 루프에 등록
+            registerUpdatable(e000AfterImageManager::update);
+            registerRenderable(e000AfterImageManager::draw);
+            e009AfterImageAccess = e000AfterImageManager;
+        }
+        return e009AfterImageAccess;
+    }
+
 
     protected TickManager getTickManager() {
-        return tickManager;
+        return TickManager;
     }
 
     @Override
@@ -174,10 +197,10 @@ public abstract class Base extends JPanel implements IFrameSize {
         super.paintComponent(g);
         Graphics2D d2 = (Graphics2D) g;
 
-        viewMetrics.calculateViewMetrics();
+        a010ViewMetrics.calculateViewMetrics();
 
-        d2.translate(viewMetrics.getCurrentXOffset(), viewMetrics.getCurrentYOffset());
-        d2.scale(viewMetrics.getCurrentScale(), viewMetrics.getCurrentScale());
+        d2.translate(a010ViewMetrics.getCurrentXOffset(), a010ViewMetrics.getCurrentYOffset());
+        d2.scale(a010ViewMetrics.getCurrentScale(), a010ViewMetrics.getCurrentScale());
 
         for (Consumer<Graphics> drawFunction : renderables) {
             drawFunction.accept(g); // Graphics 객체 'g'를 전달하며 실행!
@@ -189,7 +212,7 @@ public abstract class Base extends JPanel implements IFrameSize {
         g.fillRect(-500,1060,3920,200);
         g.setFont(new Font("Arial", Font.PLAIN, 15));
         g.setColor(Color.white);
-        g.drawString("Powered by Yooncrow Game Kit          Version = Alpha 1.3.5       2025.12.13", 10 , 1075);
+        g.drawString("Powered by Scope          Version = Alpha 1.4.0       2026.1.13", 10 , 1075);
     }
 
     @Override public int getComponentWidth() { return this.getWidth(); }

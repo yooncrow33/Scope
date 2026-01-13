@@ -1,6 +1,6 @@
-package ygk;
+package scope.internal.viewMetrics;
 
-interface IViewMetrics {
+public interface IViewMetrics {
     int getWindowWidth();
     int getWindowHeight();
     double getScaleX();

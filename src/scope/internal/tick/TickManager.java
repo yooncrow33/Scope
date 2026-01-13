@@ -1,6 +1,6 @@
-package ygk;
+package scope.internal.tick;
 
-class TickManager implements ITick{
+public class TickManager implements ITick {
     private long tick = 0;
     //private int lastPlayTime;
     private int totalPlayTime = 0;
@@ -15,13 +15,5 @@ class TickManager implements ITick{
     @Override
     public long getTick() {
         return tick;
-    }
-    @Override
-    public int getTotalPlayTime() {
-        return totalPlayTime;
-    }
-    @Override
-    public int getSessionPlayTime() {
-        return sessionPlayTime;
     }
 }

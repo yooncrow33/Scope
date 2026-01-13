@@ -1,14 +1,14 @@
-package ygk.util;
+package scope.internal.effect.afterImage;
 
 import java.awt.*;
 
-public abstract class AfterImage {
+class AfterImageRect {
     private final int X, Y;
     private int ALPHA;
     private final int ALPHA_DEGREE;
     private final int R,G,B, HEIGHT, WIDTH;
 
-    public AfterImage(int x, int y,int r, int g, int b, int width, int height ,int alpha, int alphaDegree) {
+    public AfterImageRect(int x, int y, int r, int g, int b, int width, int height , int alpha, int alphaDegree) {
         this.X = x;
         this.Y = y;
         this.ALPHA = alpha;

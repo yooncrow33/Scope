@@ -1,9 +1,10 @@
-package ygk;
+package scope.internal.systemMonitor;
 
 import com.sun.management.OperatingSystemMXBean;
+
 import java.lang.management.ManagementFactory;
 
-class SystemMonitor implements ISystemMonitor {
+public final class SystemMonitor implements ISystemMonitor {
 
     private final OperatingSystemMXBean mxbean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 

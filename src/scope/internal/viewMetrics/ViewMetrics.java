@@ -1,5 +1,5 @@
-package ygk;
-
+package scope.internal.viewMetrics;
+public
 class ViewMetrics implements IViewMetrics, IMouse {
     int windowWidth;
     private int windowHeight;

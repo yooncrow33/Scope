@@ -1,6 +1,6 @@
-package ygk;
+package scope.internal.systemMonitor;
 
-interface ISystemMonitor {
+public interface ISystemMonitor {
     long getTotalMemory();
     long getFreeMemory();
     long getUsedMemory();
