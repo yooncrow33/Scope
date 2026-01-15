@@ -30,6 +30,6 @@ class AfterImageOval {
 
     public void draw(Graphics g) {
         g.setColor(new Color(R, G, B, ALPHA));
-        g.fillRect(X, Y, WIDTH ,HEIGHT);
+        g.fillOval(X, Y, WIDTH ,HEIGHT);
     }
 }

@@ -1,10 +1,11 @@
 package scope.internal.systemMonitor;
 
 import com.sun.management.OperatingSystemMXBean;
+import scope.internal.Updatable;
 
 import java.lang.management.ManagementFactory;
 
-public final class SystemMonitor implements ISystemMonitor {
+public final class SystemMonitor implements ISystemMonitor, Updatable {
 
     private final OperatingSystemMXBean mxbean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 
@@ -13,6 +14,7 @@ public final class SystemMonitor implements ISystemMonitor {
     private long usedMemory;
     private int cpuPercentage;
 
+    @Override
     public void update() {
         Runtime runtime = Runtime.getRuntime();
         long totalBytes = runtime.totalMemory();

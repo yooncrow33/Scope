@@ -1,11 +1,7 @@
 package scope;
 
-import scope.internal.effect.afterImage.AfterImageAccess;
-import scope.internal.effect.afterImage.AfterImageManager;
-import scope.internal.effect.popup.PopupAccess;
-import scope.internal.effect.popup.PopupManager;
-import scope.internal.systemMonitor.SystemMonitor;
-import scope.internal.tick.TickManager;
+import scope.internal.facade.Access.ScopeEngineAccess;
+import scope.internal.facade.ScopeEngine;
 import scope.internal.viewMetrics.IFrameSize;
 import scope.internal.viewMetrics.ViewMetrics;
 
@@ -15,29 +11,18 @@ import java.awt.event.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.List;
-import java.util.ArrayList;
-import java.lang.Runnable;
-import java.util.function.Consumer;
 
 public abstract class Base extends JPanel implements IFrameSize {
 
-    protected JFrame frame;
+    private JFrame frame;
 
     private boolean isResizing = false;
     private long lastTime;
 
-    protected ViewMetrics a010ViewMetrics;
+    protected ViewMetrics ViewMetrics;
 
-    private TickManager TickManager = null;
-    private SystemMonitor a000SystemMonitor = null;
-    private AfterImageManager e000AfterImageManager = null;
-    private AfterImageAccess e009AfterImageAccess;
-    private PopupManager popupManager = null;
-    private PopupAccess popupAccess;
-
-    private final List<Runnable> updatables = new ArrayList<>();
-    private final List<Consumer<Graphics>> renderables = new ArrayList<>();
+    private ScopeEngine scopeEngine;
+    private ScopeEngineAccess scopeEngineAccess;
 
     public Base(String title) {
         frame = new JFrame(title);
@@ -47,7 +32,7 @@ public abstract class Base extends JPanel implements IFrameSize {
 
         frame.setPreferredSize((new Dimension(1280,720)));
 
-        a010ViewMetrics = new ViewMetrics(this);
+        ViewMetrics = new ViewMetrics(this);
 
         frame.add(this);
         frame.setVisible(true);
@@ -64,7 +49,7 @@ public abstract class Base extends JPanel implements IFrameSize {
         this.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
-                a010ViewMetrics.updateVirtualMouse(e.getX(),e.getY());
+                ViewMetrics.updateVirtualMouse(e.getX(),e.getY());
             }
         });
 
@@ -92,16 +77,13 @@ public abstract class Base extends JPanel implements IFrameSize {
                         frame.setSize(currentW, newH);
                     }
 
-                    a010ViewMetrics.calculateViewMetrics();
+                    ViewMetrics.calculateViewMetrics();
                     EventQueue.invokeLater(() -> isResizing = false);
                 }
             }
         });
 
-        TickManager = new TickManager();
-        registerUpdatable(TickManager::update);
-
-        a010ViewMetrics.calculateViewMetrics();
+        ViewMetrics.calculateViewMetrics();
 
         SwingUtilities.invokeLater(() -> {
             // 모든 UI 이벤트 처리 후 (가장 안정적일 때)
@@ -112,6 +94,8 @@ public abstract class Base extends JPanel implements IFrameSize {
             this.requestFocusInWindow();
 
             init();
+
+            scopeEngine = new ScopeEngine();
 
             startGameLoop();
         });
@@ -128,11 +112,10 @@ public abstract class Base extends JPanel implements IFrameSize {
 
             SwingUtilities.invokeLater(this::repaint);
 
+            scopeEngine.updateAll();
+
             update(deltaTime);
 
-            for (Runnable updatable : updatables) {
-                updatable.run();
-            }
 
         }, 0, 16, TimeUnit.MILLISECONDS);
     }
@@ -141,55 +124,15 @@ public abstract class Base extends JPanel implements IFrameSize {
     protected abstract void init();
     protected abstract void render(Graphics g);
 
-    public final int getMouseX() { return a010ViewMetrics.getVirtualMouseX(); }
-    public final int getMouseY() { return a010ViewMetrics.getVirtualMouseY(); }
-    public final double getScaleX() { return a010ViewMetrics.getScaleX(); }
-    public final double getScaleY() { return a010ViewMetrics.getScaleY(); }
-    public final int getWindowHeight() { return a010ViewMetrics.getWindowHeight(); }
-    public final int getWindowWidth() { return a010ViewMetrics.getWindowWidth(); }
+    public final int getMouseX() { return ViewMetrics.getVirtualMouseX(); }
+    public final int getMouseY() { return ViewMetrics.getVirtualMouseY(); }
+    public final double getScaleX() { return ViewMetrics.getScaleX(); }
+    public final double getScaleY() { return ViewMetrics.getScaleY(); }
+    public final int getWindowHeight() { return ViewMetrics.getWindowHeight(); }
+    public final int getWindowWidth() { return ViewMetrics.getWindowWidth(); }
 
-    protected void registerUpdatable(Runnable updateLogic) {
-        this.updatables.add(updateLogic);
-    }
-
-    protected void registerRenderable(Consumer<Graphics> renderLogic) {
-        this.renderables.add(renderLogic);
-    }
-
-    protected SystemMonitor getSystemMonitor() {
-        if (a000SystemMonitor == null) {
-            a000SystemMonitor = new SystemMonitor();
-            // Base의 자동 업데이트 루프에 등록
-            registerUpdatable(a000SystemMonitor::update);
-        }
-        return a000SystemMonitor;
-    }
-
-    protected PopupAccess getPopupManager() {
-        if (popupManager == null) {
-            popupManager = new PopupManager(getTickManager());
-            // Base의 자동 업데이트/렌더 루프에 등록
-            registerUpdatable(popupManager::update);
-            registerRenderable(popupManager::draw);
-            popupAccess = popupManager;
-        }
-        return popupAccess;
-    }
-
-    protected AfterImageAccess getAfterImageManager() {
-        if (e000AfterImageManager == null) {
-            e000AfterImageManager = new AfterImageManager();
-            // Base의 자동 업데이트/렌더 루프에 등록
-            registerUpdatable(e000AfterImageManager::update);
-            registerRenderable(e000AfterImageManager::draw);
-            e009AfterImageAccess = e000AfterImageManager;
-        }
-        return e009AfterImageAccess;
-    }
-
-
-    protected TickManager getTickManager() {
-        return TickManager;
+    public ScopeEngineAccess scopeEngine() {
+        return (scopeEngineAccess = scopeEngine);
     }
 
     @Override
@@ -197,14 +140,12 @@ public abstract class Base extends JPanel implements IFrameSize {
         super.paintComponent(g);
         Graphics2D d2 = (Graphics2D) g;
 
-        a010ViewMetrics.calculateViewMetrics();
+        ViewMetrics.calculateViewMetrics();
 
-        d2.translate(a010ViewMetrics.getCurrentXOffset(), a010ViewMetrics.getCurrentYOffset());
-        d2.scale(a010ViewMetrics.getCurrentScale(), a010ViewMetrics.getCurrentScale());
+        d2.translate(ViewMetrics.getCurrentXOffset(), ViewMetrics.getCurrentYOffset());
+        d2.scale(ViewMetrics.getCurrentScale(), ViewMetrics.getCurrentScale());
 
-        for (Consumer<Graphics> drawFunction : renderables) {
-            drawFunction.accept(g); // Graphics 객체 'g'를 전달하며 실행!
-        }
+        scopeEngine.renderAll(g);
 
         render(g);
 
@@ -212,7 +153,7 @@ public abstract class Base extends JPanel implements IFrameSize {
         g.fillRect(-500,1060,3920,200);
         g.setFont(new Font("Arial", Font.PLAIN, 15));
         g.setColor(Color.white);
-        g.drawString("Powered by Scope          Version = Alpha 1.4.0       2026.1.13", 10 , 1075);
+        g.drawString("Powered by Scope          Version = Alpha 1.5.0       2026.1.15", 10 , 1075);
     }
 
     @Override public int getComponentWidth() { return this.getWidth(); }
