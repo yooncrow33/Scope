@@ -19,9 +19,11 @@ public abstract class Base extends JPanel implements IFrameSize {
     private boolean isResizing = false;
     private long lastTime;
 
+    private boolean runnung = false;
+
     protected ViewMetrics ViewMetrics;
 
-    private ScopeEngine scopeEngine;
+    private final ScopeEngine scopeEngine;
     private ScopeEngineAccess scopeEngineAccess;
 
     public Base(String title) {
@@ -33,6 +35,8 @@ public abstract class Base extends JPanel implements IFrameSize {
         frame.setPreferredSize((new Dimension(1280,720)));
 
         ViewMetrics = new ViewMetrics(this);
+
+        scopeEngine = new ScopeEngine();
 
         frame.add(this);
         frame.setVisible(true);
@@ -50,6 +54,7 @@ public abstract class Base extends JPanel implements IFrameSize {
             @Override
             public void mouseMoved(MouseEvent e) {
                 ViewMetrics.updateVirtualMouse(e.getX(),e.getY());
+                click();
             }
         });
 
@@ -95,17 +100,17 @@ public abstract class Base extends JPanel implements IFrameSize {
 
             init();
 
-            scopeEngine = new ScopeEngine();
-
             startGameLoop();
         });
     }
 
     private void startGameLoop() {
+        runnung = true;
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         lastTime = System.nanoTime();
 
         executor.scheduleAtFixedRate(() -> {
+            if (!runnung) { executor.shutdown(); return; }
             long now = System.nanoTime();
             double deltaTime = (now - lastTime) / 1_000_000_000.0; // 초 단위
             lastTime = now;
@@ -123,6 +128,8 @@ public abstract class Base extends JPanel implements IFrameSize {
     protected abstract void update(double deltaTime);
     protected abstract void init();
     protected abstract void render(Graphics g);
+    protected void click() {}
+    protected final void exit() { runnung = false; }
 
     public final int getMouseX() { return ViewMetrics.getVirtualMouseX(); }
     public final int getMouseY() { return ViewMetrics.getVirtualMouseY(); }
@@ -130,6 +137,19 @@ public abstract class Base extends JPanel implements IFrameSize {
     public final double getScaleY() { return ViewMetrics.getScaleY(); }
     public final int getWindowHeight() { return ViewMetrics.getWindowHeight(); }
     public final int getWindowWidth() { return ViewMetrics.getWindowWidth(); }
+
+    protected final String getVersion() { return "Scope v1.5.3-alpha"; }
+    protected final String getBuildDate() { return "2026-2-13"; }
+    protected final String getDeveloper() { return "yooncrow33"; }
+    protected final String getRepository() { return "yooncrow33/Scope"; }
+    protected final String getTitle() { return "____________________________________________________\n" +
+            "  ____                             \n" +
+            " / ___|  ___ ___  _ __   ___       Version: 1.5.3-alpha\n" +
+            " \\___ \\ / __/ _ \\| '_ \\ / _ \\      Build: 2026-02-13\n" +
+            "  ___) | (_| (_) | |_) |  __/      Dev: yooncrow33\n" +
+            " |____/ \\___\\___/| .__/ \\___|      Framework: Scope\n" +
+            "                 |_|               \n" +
+            "____________________________________________________"; }
 
     public ScopeEngineAccess scopeEngine() {
         return (scopeEngineAccess = scopeEngine);
@@ -148,12 +168,6 @@ public abstract class Base extends JPanel implements IFrameSize {
         scopeEngine.renderAll(g);
 
         render(g);
-
-        g.setColor(Color.black);
-        g.fillRect(-500,1060,3920,200);
-        g.setFont(new Font("Arial", Font.PLAIN, 15));
-        g.setColor(Color.white);
-        g.drawString("Powered by Scope          Version = Alpha 1.5.0       2026.1.15", 10 , 1075);
     }
 
     @Override public int getComponentWidth() { return this.getWidth(); }

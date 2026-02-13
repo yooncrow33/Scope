@@ -1,7 +1,5 @@
 package scope.internal.sound;
 
-import scope.internal.facade.Access.SoundManagerAccess;
-
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
