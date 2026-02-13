@@ -3,7 +3,7 @@ package test;
 import java.awt.*;
 import scope.Base;
 
-public class Test extends Base {
+class Test extends Base {
 
     Key key;
 

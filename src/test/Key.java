@@ -4,7 +4,7 @@ import scope.KeyBindingBase;
 
 import javax.swing.*;
 
-public class Key extends KeyBindingBase {
+class Key extends KeyBindingBase {
     Test test;
     protected Key(JComponent comp, Test test) {
         super(comp);
