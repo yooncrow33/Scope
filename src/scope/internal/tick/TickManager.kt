@@ -1,19 +1,20 @@
-package scope.internal.tick;
+package scope.internal.tick
 
-public class TickManager implements ITick {
-    private long tick = 0;
+import kotlin.math.ceil
+
+class TickManager : ITick {
+    private var tick: Long = 0
+
     //private int lastPlayTime;
-    private int totalPlayTime = 0;
-    private int sessionPlayTime = 0;
+    private var sessionPlayTime : Int = 0
 
-    public void update() {
-        tick++;
-        sessionPlayTime = (int)Math.ceil(tick/3600f);
+    fun update() {
+        tick++
+        sessionPlayTime = ceil((tick / 3600f).toDouble()).toInt()
         //totalPlayTime = lastPlayTime + sessionPlayTime;
     }
 
-    @Override
-    public long getTick() {
-        return tick;
+    override fun getTick(): Long {
+        return tick
     }
 }
