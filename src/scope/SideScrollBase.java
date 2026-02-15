@@ -42,7 +42,6 @@ public abstract class SideScrollBase extends Base {
 
     protected abstract void update(double deltaTime);
     protected abstract void init();
-    protected abstract void render(Graphics g);
     protected void clickEvent() {}
     protected final void exit() { internalExit(); }
 
@@ -103,9 +102,19 @@ public abstract class SideScrollBase extends Base {
         }
     }
 
+    /**
+     * Renders the background elements behind entities.
+     */
+    protected void backGroundRender(Graphics g) {}
+
+    /**
+     * Renders at the top-most layer, just below the HUD.
+     */
+    protected void render(Graphics g) {}
+
     @Override
     protected final void internalRender(Graphics g) {
-        render(g);
+        backGroundRender(g);
         for (Entity e : entities) {
             double relativeX = e.getX() - camera.getX();
             double relativeY = e.getY() - camera.getY();
@@ -115,12 +124,13 @@ public abstract class SideScrollBase extends Base {
                     if (cullingDistanceHeight > relativeY) {
                         if (-1.0 * cullingDistanceHeight < relativeY) {
                             e.render(g,e.getX() - camera.getX() + VIRTUAL_X_SCREEN_CENTER,e.getY() - camera.getY() + VIRTUAL_Y_SCREEN_CENTER);
-                            e.renderHitbox(g);
+                            if (hitBoxRender) e.renderHitbox(g);
                         }
                     }
                 }
             }
         }
+        render(g);
         for (HudEntity e : hudEntities) {
             e.render(g);
         }

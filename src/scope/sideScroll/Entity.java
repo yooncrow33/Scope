@@ -67,6 +67,7 @@ public abstract class Entity {
     }
 
     public void renderHitbox(Graphics g) {
+        g.setColor(hitBoxColor);
         g.fillOval((int)x, (int)y, radius * 2, radius * 2); // 왼쪽 위 기준으로 원을 그림
     }
 }
