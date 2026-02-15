@@ -124,7 +124,7 @@ public abstract class SideScrollBase extends Base {
                     if (cullingDistanceHeight > relativeY) {
                         if (-1.0 * cullingDistanceHeight < relativeY) {
                             e.render(g,e.getX() - camera.getX() + VIRTUAL_X_SCREEN_CENTER,e.getY() - camera.getY() + VIRTUAL_Y_SCREEN_CENTER);
-                            if (hitBoxRender) e.renderHitbox(g);
+                            if (hitBoxRender) e.renderHitbox(g,e.getX() - camera.getX() + VIRTUAL_X_SCREEN_CENTER,e.getY() - camera.getY() + VIRTUAL_Y_SCREEN_CENTER);
                         }
                     }
                 }
