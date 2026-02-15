@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public abstract class Base extends JPanel implements IFrameSize {
+abstract class Base extends JPanel implements IFrameSize {
 
     private JFrame frame;
 
@@ -54,7 +54,7 @@ public abstract class Base extends JPanel implements IFrameSize {
             @Override
             public void mouseMoved(MouseEvent e) {
                 ViewMetrics.updateVirtualMouse(e.getX(),e.getY());
-                click();
+                internalClick();
             }
         });
 
@@ -98,7 +98,7 @@ public abstract class Base extends JPanel implements IFrameSize {
             this.requestFocus();
             this.requestFocusInWindow();
 
-            init();
+            internalInit();
 
             startGameLoop();
         });
@@ -119,17 +119,17 @@ public abstract class Base extends JPanel implements IFrameSize {
 
             scopeEngine.updateAll();
 
-            update(deltaTime);
+            internalUpdate(deltaTime);
 
 
         }, 0, 16, TimeUnit.MILLISECONDS);
     }
 
-    protected abstract void update(double deltaTime);
-    protected abstract void init();
-    protected abstract void render(Graphics g);
-    protected void click() {}
-    protected final void exit() { runnung = false; }
+    protected abstract void internalUpdate(double deltaTime);
+    protected abstract void internalInit();
+    protected abstract void internalRender(Graphics g);
+    protected void internalClick() {}
+    protected final void internalExit() { runnung = false; }
 
     public final int getMouseX() { return ViewMetrics.getVirtualMouseX(); }
     public final int getMouseY() { return ViewMetrics.getVirtualMouseY(); }
@@ -138,18 +138,21 @@ public abstract class Base extends JPanel implements IFrameSize {
     public final int getWindowHeight() { return ViewMetrics.getWindowHeight(); }
     public final int getWindowWidth() { return ViewMetrics.getWindowWidth(); }
 
-    protected final String getVersion() { return "Scope v1.5.3-alpha"; }
-    protected final String getBuildDate() { return "2026-2-13"; }
+    protected final String getVersion() { return "Scope v1.6.0-alpha"; }
+    protected final String getBuildDate() { return "2026-2-15"; }
+    /*
     protected final String getDeveloper() { return "yooncrow33"; }
-    protected final String getRepository() { return "yooncrow33/Scope"; }
+    protected final String getRepository() { return "yooncrow33/Scope.git"; }
     protected final String getTitle() { return "____________________________________________________\n" +
             "  ____                             \n" +
-            " / ___|  ___ ___  _ __   ___       Version: 1.5.3-alpha\n" +
+            " / ___|  ___ ___  _ __   ___       Version: 1.6.0-alpha\n" +
             " \\___ \\ / __/ _ \\| '_ \\ / _ \\      Build: 2026-02-13\n" +
             "  ___) | (_| (_) | |_) |  __/      Dev: yooncrow33\n" +
             " |____/ \\___\\___/| .__/ \\___|      Framework: Scope\n" +
             "                 |_|               \n" +
             "____________________________________________________"; }
+
+     */
 
     public ScopeEngineAccess scopeEngine() {
         return (scopeEngineAccess = scopeEngine);
@@ -167,7 +170,7 @@ public abstract class Base extends JPanel implements IFrameSize {
 
         scopeEngine.renderAll(g);
 
-        render(g);
+        internalRender(g);
     }
 
     @Override public int getComponentWidth() { return this.getWidth(); }

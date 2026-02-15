@@ -1,9 +1,9 @@
 package test;
 
 import java.awt.*;
-import scope.Base;
+import scope.SideScrollBase;
 
-class Test extends Base {
+class Test extends SideScrollBase {
 
     Key key;
 
