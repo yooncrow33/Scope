@@ -1,4 +1,4 @@
-package test;
+/*package test;
 
 import scope.KeyBindingBase;
 
@@ -16,3 +16,6 @@ class Key extends KeyBindingBase {
         test.addPopup();
     }
 }
+
+
+ */

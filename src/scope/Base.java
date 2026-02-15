@@ -138,7 +138,7 @@ abstract class Base extends JPanel implements IFrameSize {
     public final int getWindowHeight() { return ViewMetrics.getWindowHeight(); }
     public final int getWindowWidth() { return ViewMetrics.getWindowWidth(); }
 
-    protected final String getVersion() { return "Scope v1.6.0-alpha"; }
+    protected final String getVersion() { return "Scope v1.6.1-alpha"; }
     protected final String getBuildDate() { return "2026-2-15"; }
     /*
     protected final String getDeveloper() { return "yooncrow33"; }

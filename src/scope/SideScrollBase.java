@@ -105,6 +105,7 @@ public abstract class SideScrollBase extends Base {
 
     @Override
     protected final void internalRender(Graphics g) {
+        render(g);
         for (Entity e : entities) {
             double relativeX = e.getX() - camera.getX();
             double relativeY = e.getY() - camera.getY();
@@ -120,7 +121,6 @@ public abstract class SideScrollBase extends Base {
                 }
             }
         }
-        render(g);
         for (HudEntity e : hudEntities) {
             e.render(g);
         }

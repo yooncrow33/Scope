@@ -1,4 +1,4 @@
-package test;
+/*package test;
 
 import java.awt.*;
 import scope.SideScrollBase;
@@ -41,3 +41,5 @@ class Test extends SideScrollBase {
         new Test("test app");
     }
 }
+
+ */
