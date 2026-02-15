@@ -19,7 +19,7 @@ public abstract class SideScrollBase extends Base {
         this.WORLD_HEIGHT = worldHeight;
         WORLD_HALF_WIDTH = WORLD_WIDTH / 2.0;
         MIN_X = -WORLD_HALF_WIDTH;
-        MAN_X = WORLD_HALF_WIDTH;
+        MAX_X = WORLD_HALF_WIDTH;
 
         WORLD_HALF_HEIGHT = WORLD_HEIGHT / 2.0;
         MIN_Y = -WORLD_HALF_HEIGHT;
@@ -34,7 +34,7 @@ public abstract class SideScrollBase extends Base {
 
     final double WORLD_HALF_WIDTH;
     public final double MIN_X;
-    public final double MAN_X;
+    public final double MAX_X;
 
     final double WORLD_HALF_HEIGHT;
     public final double MIN_Y;

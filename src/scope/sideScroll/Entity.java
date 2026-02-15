@@ -49,8 +49,8 @@ public abstract class Entity {
     public void addY(double value) { y += value;}
 
     public void checkBound(SideScrollBase ssBase) {
-        if (x > ssBase.MAN_X) {
-            x = ssBase.MAN_X;
+        if (x > ssBase.MAX_X) {
+            x = ssBase.MAX_X;
         } else if (x < ssBase.MIN_X) {
             x = ssBase.MIN_X;
         }
