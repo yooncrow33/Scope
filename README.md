@@ -371,7 +371,7 @@ protected void onKeyWRelease() {
 
 ---
 
-## ✨ Effect System
+## Effect System
 
 ### `EffectFacade`
 
