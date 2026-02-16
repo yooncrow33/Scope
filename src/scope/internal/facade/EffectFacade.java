@@ -9,7 +9,7 @@ import scope.internal.Lazy;
 import scope.internal.facade.Access.EffectFacadeAccess;
 import scope.internal.tick.TickManager;
 
-public class EffectFacade implements EffectFacadeAccess {
+public final class EffectFacade implements EffectFacadeAccess {
     private AfterImageAccess afterImageAccess;
     private PopupAccess popupAccess;
 

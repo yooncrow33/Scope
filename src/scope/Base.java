@@ -131,15 +131,15 @@ abstract class Base extends JPanel implements IFrameSize {
     protected void internalClick() {}
     protected final void internalExit() { runnung = false; }
 
-    public final int getMouseX() { return ViewMetrics.getVirtualMouseX(); }
-    public final int getMouseY() { return ViewMetrics.getVirtualMouseY(); }
-    public final double getScaleX() { return ViewMetrics.getScaleX(); }
-    public final double getScaleY() { return ViewMetrics.getScaleY(); }
-    public final int getWindowHeight() { return ViewMetrics.getWindowHeight(); }
-    public final int getWindowWidth() { return ViewMetrics.getWindowWidth(); }
+    public final int getInternalMouseX() { return ViewMetrics.getVirtualMouseX(); }
+    public final int getInternalMouseY() { return ViewMetrics.getVirtualMouseY(); }
+    public final double getInternalScaleX() { return ViewMetrics.getScaleX(); }
+    public final double getInternalScaleY() { return ViewMetrics.getScaleY(); }
+    public final int getInternalWindowHeight() { return ViewMetrics.getWindowHeight(); }
+    public final int getInternalWindowWidth() { return ViewMetrics.getWindowWidth(); }
 
-    protected final String getVersion() { return "Scope v1.6.2-alpha"; }
-    protected final String getBuildDate() { return "2026-2-15"; }
+    protected final String getVersion() { return "Scope v1.6.3-alpha"; }
+    protected final String getBuildDate() { return "2026-2-16"; }
     /*
     protected final String getDeveloper() { return "yooncrow33"; }
     protected final String getRepository() { return "yooncrow33/Scope.git"; }

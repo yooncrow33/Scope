@@ -36,4 +36,11 @@ public abstract class EmptyBase extends Base {
     public ScopeEngineAccess scopeEngine() {
         return super.scopeEngine();
     }
+
+    public final int getMouseX() { return ViewMetrics.getVirtualMouseX(); }
+    public final int getMouseY() { return ViewMetrics.getVirtualMouseY(); }
+    public final double getScaleX() { return ViewMetrics.getScaleX(); }
+    public final double getScaleY() { return ViewMetrics.getScaleY(); }
+    public final int getWindowHeight() { return ViewMetrics.getWindowHeight(); }
+    public final int getWindowWidth() { return ViewMetrics.getWindowWidth(); }
 }

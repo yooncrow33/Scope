@@ -7,8 +7,8 @@ import java.awt.*;
 public abstract class Entity {
     boolean isRemove = false;
     final int radius;
-    double x = 0;
-    double y = 0;
+    protected double x = 0;
+    protected double y = 0;
     final int layer;
     final boolean isCollisionEnabled;
     final boolean isUpdateEnabled;
@@ -68,6 +68,6 @@ public abstract class Entity {
 
     public void renderHitbox(Graphics g,double x,double y) {
         g.setColor(hitBoxColor);
-        g.fillOval((int)x, (int)y, radius * 2, radius * 2); // 왼쪽 위 기준으로 원을 그림
+        g.fillOval((int)(x - radius), (int)(y - radius), radius * 2, radius * 2);
     }
 }

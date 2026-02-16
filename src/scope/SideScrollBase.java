@@ -53,6 +53,7 @@ public abstract class SideScrollBase extends Base {
     private final Camera camera = new Camera();
 
     private boolean hitBoxRender = false;
+    private boolean pause = false;
 
     protected void addEntity(Entity e) {
         entities.add(e);
@@ -70,6 +71,7 @@ public abstract class SideScrollBase extends Base {
 
     @Override
     protected final void internalUpdate(double dt) {
+        if (pause) {
         update(dt);
         //internal update
         for (int i = entities.size() - 1; i >= 0; i--) {
@@ -87,8 +89,14 @@ public abstract class SideScrollBase extends Base {
                 hudEntities.remove(i);
             }
         }
-        if (isEntitiesNeedSort) { entities.sort(Comparator.comparingInt(Entity::getLayer)); isEntitiesNeedSort = false; }
-        if (isHudEntityNeedSort) { hudEntities.sort(Comparator.comparingInt(HudEntity::getLayer)); isHudEntityNeedSort = false; }
+        if (isEntitiesNeedSort) {
+            entities.sort(Comparator.comparingInt(Entity::getLayer));
+            isEntitiesNeedSort = false;
+        }
+        if (isHudEntityNeedSort) {
+            hudEntities.sort(Comparator.comparingInt(HudEntity::getLayer));
+            isHudEntityNeedSort = false;
+        }
         for (int i = 0; i < entities.size(); i++) {
             Entity e = entities.get(i);
             if (!e.isCollisionEnabled()) continue;
@@ -99,6 +107,7 @@ public abstract class SideScrollBase extends Base {
                     resolveCollision(e, e2);
                 }
             }
+        }
         }
     }
 
@@ -172,7 +181,15 @@ public abstract class SideScrollBase extends Base {
         }
     }
 
+    public final int getMouseX() { return ViewMetrics.getVirtualMouseX(); }
+    public final int getMouseY() { return ViewMetrics.getVirtualMouseY(); }
+    public final double getScaleX() { return ViewMetrics.getScaleX(); }
+    public final double getScaleY() { return ViewMetrics.getScaleY(); }
+    public final int getWindowHeight() { return ViewMetrics.getWindowHeight(); }
+    public final int getWindowWidth() { return ViewMetrics.getWindowWidth(); }
+
     public void setHitBoxRender(boolean b) {hitBoxRender = b;}
+    public void setPause(boolean b) {pause = b;}
 
     public Camera getCamera() {return camera;}
 }

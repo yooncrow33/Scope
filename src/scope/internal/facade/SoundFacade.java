@@ -5,7 +5,7 @@ import scope.internal.facade.Access.SoundManagerAccess;
 import scope.internal.facade.Access.SystemFacadeAccess;
 import scope.internal.sound.SoundManager;
 
-public class SoundFacade implements SoundManagerAccess {
+public final class SoundFacade implements SoundManagerAccess {
 
     private final Lazy<SoundManager> sm;
 
