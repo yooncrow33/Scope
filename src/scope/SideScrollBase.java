@@ -73,7 +73,7 @@ public abstract class SideScrollBase extends Base {
     @Override
     protected final void internalUpdate(double dt) {
         if (!launch) return;
-        if (pause) {
+        if (pause) return;
         update(dt);
         //internal update
         for (int i = entities.size() - 1; i >= 0; i--) {
@@ -109,7 +109,6 @@ public abstract class SideScrollBase extends Base {
                     resolveCollision(e, e2);
                 }
             }
-        }
         }
     }
 
