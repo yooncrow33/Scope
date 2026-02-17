@@ -92,11 +92,11 @@ public abstract class SideScrollBase extends Base {
             }
         }
         if (isEntitiesNeedSort) {
-            entities.sort(Comparator.comparingInt(Entity::getLayer));
+            entities.sort(Comparator.comparingInt(Entity::getLayer).reversed());
             isEntitiesNeedSort = false;
         }
         if (isHudEntityNeedSort) {
-            hudEntities.sort(Comparator.comparingInt(HudEntity::getLayer));
+            hudEntities.sort(Comparator.comparingInt(HudEntity::getLayer).reversed());
             isHudEntityNeedSort = false;
         }
         for (int i = 0; i < entities.size(); i++) {
@@ -126,7 +126,8 @@ public abstract class SideScrollBase extends Base {
     protected final void internalRender(Graphics g) {
         if (!launch) return;
         backGroundRender(g);
-        for (Entity e : entities) {
+        for (int i = entities.size() - 1; i >= 0; i--) {
+            Entity e = entities.get(i);
             double relativeX = e.getX() - camera.getX();
             double relativeY = e.getY() - camera.getY();
 
@@ -142,7 +143,9 @@ public abstract class SideScrollBase extends Base {
             }
         }
         render(g);
-        for (HudEntity e : hudEntities) {
+
+        for (int i = hudEntities.size()- 1; i >= 0; i--) {
+            HudEntity e = hudEntities.get(i);
             e.render(g);
         }
     }
