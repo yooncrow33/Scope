@@ -54,6 +54,7 @@ public abstract class SideScrollBase extends Base {
 
     private boolean hitBoxRender = false;
     private boolean pause = false;
+    private boolean launch = false;
 
     protected void addEntity(Entity e) {
         entities.add(e);
@@ -71,6 +72,7 @@ public abstract class SideScrollBase extends Base {
 
     @Override
     protected final void internalUpdate(double dt) {
+        if (!launch) return;
         if (pause) {
         update(dt);
         //internal update
@@ -123,6 +125,7 @@ public abstract class SideScrollBase extends Base {
 
     @Override
     protected final void internalRender(Graphics g) {
+        if (!launch) return;
         backGroundRender(g);
         for (Entity e : entities) {
             double relativeX = e.getX() - camera.getX();
@@ -149,6 +152,8 @@ public abstract class SideScrollBase extends Base {
     protected void internalClick() {
         clickEvent();
     }
+
+    protected final void launch() {launch = true;}
 
     public ScopeEngineAccess scopeEngine() {
         return super.scopeEngine();
