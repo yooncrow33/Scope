@@ -1,6 +1,6 @@
 # Scope
 
-**Scope v1.6.0-alpha** - A comprehensive Java game development framework built on Swing for creating 2D games with ease.
+**Scope v1.6.4-alpha** - A comprehensive Java game development framework built on Swing for creating 2D games with ease.
 
 ---
 
@@ -108,6 +108,9 @@ public class MyPlatformer extends SideScrollBase {
         // Add entities and set up the level
         Entity player = createPlayer();
         addEntity(player);
+        
+        //update, render loop start.
+        launch();
     }
     
     @Override
