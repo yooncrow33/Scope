@@ -10,7 +10,7 @@
 - [Core Features](#core-features)
 - [Getting Started](#getting-started)
 - [Base Classes](#base-classes)
-- [Side-Scroll Engine](#side-scroll-engine)
+- [Top-Down Engine](#side-scroll-engine)
 - [Entity System](#entity-system)
 - [Camera System](#camera-system)
 - [Input Handling](#input-handling)
@@ -28,7 +28,7 @@ Scope is a lightweight yet powerful Java game framework designed to simplify gam
 - **Easy window management** with automatic aspect ratio handling (16:9)
 - **Flexible rendering pipeline** with graphics scaling and offset management
 - **Comprehensive input system** supporting keyboard input detection
-- **Side-scroll game support** with entity management, collision detection, and camera following
+- **Top-Down game support** with entity management, collision detection, and camera following
 - **Effect system** for post-processing effects like after-images and popup text
 - **Sound management** for background music and sound effects
 - **System monitoring** for memory and CPU usage tracking
@@ -63,66 +63,66 @@ To create a simple Scope game, extend `EmptyBase`:
 
 ```java
 public class MyGame extends EmptyBase {
-    
+
     public MyGame() {
         super("My Awesome Game");
     }
-    
+
     @Override
     protected void init() {
         // Initialize your game here
         System.out.println("Game initialized!");
     }
-    
+
     @Override
     protected void update(double deltaTime) {
         // Update game logic
     }
-    
+
     @Override
     protected void render(Graphics g) {
         // Render your game
         g.setColor(Color.BLUE);
         g.fillRect(100, 100, 50, 50);
     }
-    
+
     public static void main(String[] args) {
         new MyGame();
     }
 }
 ```
 
-### Side-Scroll Game Setup
+### Top-Down Game Setup
 
-For side-scrolling games, extend `SideScrollBase`:
+For top-down games, extend `TapDownBase`:
 
 ```java
-public class MyPlatformer extends SideScrollBase {
-    
+public class MyPlatformer extends TapDownBase {
+
     public MyPlatformer() {
         super("My Platformer", 5000, 2000); // world width, world height
     }
-    
+
     @Override
     protected void init() {
         // Add entities and set up the level
         Entity player = createPlayer();
         addEntity(player);
-        
+
         //update, render loop start.
         launch();
     }
-    
+
     @Override
     protected void update(double deltaTime) {
         // Update game logic
     }
-    
+
     @Override
     protected void render(Graphics g) {
         // Render world-specific objects
     }
-    
+
     public static void main(String[] args) {
         new MyPlatformer();
     }
@@ -155,15 +155,22 @@ A simple base class for non-side-scroll games. Provides basic rendering and upda
 
 ---
 
-## Side-Scroll Engine
+## Top-Down Engine
 
-### `SideScrollBase`
+### `TapDownBase`
 
-Extended base class specifically for side-scrolling games. Includes entity management, collision detection, and camera system.
+Extended base class specifically for top-down games. Includes entity management, collision detection, and camera system.
+
+> [!CAUTION]
+> ### CRITICAL: The `launch()` Method
+> For any class extending `TapDownBase`, you **MUST** call `launch()` at the end of your `init()` method.
+>
+> * **Why?** This triggers the internal Game Loop thread.
+> * **If omitted:** Your `update()` and `render()` methods will never be called, resulting in a frozen or black screen.
 
 **Constructor:**
 ```java
-SideScrollBase(String title, int worldWidth, int worldHeight)
+TapDownBase(String title, int worldWidth, int worldHeight)
 ```
 
 **World Bounds:**
@@ -189,8 +196,8 @@ SideScrollBase(String title, int worldWidth, int worldHeight)
 
 **Collision Handling:**
 - `resolveCollision(Entity a, Entity b)` - Handle collisions between entities
-  - Automatically separates overlapping entities
-  - Prevents tunneling with overlap resolution
+    - Automatically separates overlapping entities
+    - Prevents tunneling with overlap resolution
 
 **Debug Features:**
 - `setHitBoxRender(boolean b)` - Toggle hitbox visualization
@@ -205,9 +212,9 @@ Abstract base class for collidable game objects (player, enemies, obstacles).
 
 **Constructor:**
 ```java
-Entity(int radius, double x, double y, 
-       boolean isCollisionEnabled, 
-       boolean isUpdateEnabled, 
+Entity(int radius, double x, double y,
+       boolean isCollisionEnabled,
+       boolean isUpdateEnabled,
        int layer)
 ```
 
@@ -227,7 +234,7 @@ Entity(int radius, double x, double y,
 - `getRadius()` - Get collision radius
 - `getLayer()` - Get render layer
 - `addX(double value)`, `addY(double value)` - Move entity
-- `checkBound(SideScrollBase ssBase)` - Keep entity within world bounds
+- `checkBound(TapDownBase ssBase)` - Keep entity within world bounds
 - `remove()` - Mark entity for removal
 - `renderHitbox(Graphics g)` - Draw collision circle for debugging
 - `isCollisionEnabled()` - Check if entity can collide
@@ -236,17 +243,17 @@ Entity(int radius, double x, double y,
 **Example Entity:**
 ```java
 public class Player extends Entity {
-    
+
     public Player(double startX, double startY) {
         super(25, startX, startY, true, true, 5);
     }
-    
+
     @Override
     public void render(Graphics g, double x, double y) {
         g.setColor(Color.RED);
         g.fillOval((int)x - radius, (int)y - radius, radius * 2, radius * 2);
     }
-    
+
     @Override
     public void update(double dt) {
         // Move player logic
@@ -260,8 +267,8 @@ Non-colliding UI element that stays in screen space (not affected by camera).
 
 **Constructor:**
 ```java
-HudEntity(double x, double y, 
-          boolean isUpdateEnabled, 
+HudEntity(double x, double y,
+          boolean isUpdateEnabled,
           int layer)
 ```
 
@@ -273,17 +280,17 @@ HudEntity(double x, double y,
 ```java
 public class HealthBar extends HudEntity {
     private int health = 100;
-    
+
     public HealthBar() {
         super(10, 10, true, 100);
     }
-    
+
     @Override
     public void render(Graphics g) {
         g.setColor(Color.RED);
         g.fillRect((int)x, (int)y, health * 2, 20);
     }
-    
+
     @Override
     public void update(double dt) {
         // Update health
@@ -305,8 +312,8 @@ Smooth camera control with follow mechanics.
 - `move(double xValue, double yValue)` - Relative movement
 - `setX(double xValue)`, `setY(double yValue)` - Absolute positioning
 - `follow(double targetX, double targetY, double lerp)` - Smooth follow
-  - `lerp` parameter: 0.0 (no movement) to 1.0 (instant snap)
-  - Typical value: 0.1 for smooth follow
+    - `lerp` parameter: 0.0 (no movement) to 1.0 (instant snap)
+    - Typical value: 0.1 for smooth follow
 
 **Example - Following Player:**
 ```java
@@ -314,7 +321,7 @@ Smooth camera control with follow mechanics.
 protected void update(double deltaTime) {
     Player player = getPlayer();
     Camera camera = getCamera();
-    
+
     // Smooth camera follow
     camera.follow(player.getX(), player.getY(), 0.05);
 }
@@ -392,8 +399,8 @@ scopeEngine().effect().AfterImage()
         255, 100, 50,              // RGB color
         width, height,             // Size
         200,                       // Initial alpha
-        5                          // Alpha decrease per frame
-    );
+                5                          // Alpha decrease per frame
+);
 ```
 
 **Circular After-Image:**
@@ -404,8 +411,8 @@ scopeEngine().effect().AfterImage()
         255, 100, 50,              // RGB color
         width, height,             // Size
         200,                       // Initial alpha
-        5                          // Alpha decrease per frame
-    );
+                5                          // Alpha decrease per frame
+);
 ```
 
 #### Popup Effect
@@ -416,10 +423,10 @@ Display floating text notifications.
 scopeEngine().effect().Popup()
     .addPopup(
         "Line 1: Damage taken!",
-        "Line 2: -25 HP",
-        "Line 3: Critical Hit!",
-        "DAMAGE"                   // Title/Category
-    );
+                "Line 2: -25 HP",
+                "Line 3: Critical Hit!",
+                "DAMAGE"                   // Title/Category
+);
 ```
 
 ---
@@ -529,37 +536,37 @@ protected void render(Graphics g) {
 
 ```java
 import scope.*;
-import scope.sideScroll.*;
-import java.awt.*;
-import java.awt.event.*;
+import scope.tapdown.*;
 
-public class SimplePlatformer extends SideScrollBase {
-    
+import java.awt.*;
+
+public class SimplePlatformer extends TopDownBase {
+
     private Entity player;
-    
+
     public SimplePlatformer() {
         super("Simple Platformer", 3200, 1800);
     }
-    
+
     @Override
     protected void init() {
         // Create player
         player = new Entity(15, 0, 0, true, true, 10) {
             private double velocityY = 0;
             private boolean isJumping = false;
-            
+
             @Override
             public void render(Graphics g, double x, double y) {
                 g.setColor(Color.RED);
-                g.fillOval((int)x - radius, (int)y - radius, radius * 2, radius * 2);
+                g.fillOval((int) x - radius, (int) y - radius, radius * 2, radius * 2);
             }
-            
+
             @Override
             public void update(double dt) {
                 // Gravity
                 velocityY += 500 * dt;
                 y += velocityY * dt;
-                
+
                 // Keep in bounds
                 if (y > 900) {
                     y = 900;
@@ -568,39 +575,40 @@ public class SimplePlatformer extends SideScrollBase {
                 }
             }
         };
-        
+
         addEntity(player);
-        
+
         // Create platform
         addEntity(new Entity(100, 0, 900, true, false, 5) {
             @Override
             public void render(Graphics g, double x, double y) {
                 g.setColor(Color.GREEN);
-                g.fillRect((int)x - radius, (int)y - radius, radius * 2, radius * 2);
+                g.fillRect((int) x - radius, (int) y - radius, radius * 2, radius * 2);
             }
-            
+
             @Override
-            public void update(double dt) {}
+            public void update(double dt) {
+            }
         });
-        
+
         // Start background music
         scopeEngine().sound().setExternalRoot("assets");
         scopeEngine().sound().loopBgm("bgm.wav");
     }
-    
+
     @Override
     protected void update(double deltaTime) {
         // Camera follows player
         getCamera().follow(player.getX(), player.getY(), 0.08);
     }
-    
+
     @Override
     protected void render(Graphics g) {
         // Render background
         g.setColor(Color.CYAN);
-        g.fillRect((int)(MIN_X - 1000), (int)(MIN_Y - 1000), 10000, 10000);
+        g.fillRect((int) (MIN_X - 1000), (int) (MIN_Y - 1000), 10000, 10000);
     }
-    
+
     @Override
     protected void onKeyWPress() {
         // Jump
@@ -608,17 +616,17 @@ public class SimplePlatformer extends SideScrollBase {
             // Apply upward velocity in update
         }
     }
-    
+
     @Override
     protected void onKeyAPress() {
         player.addX(-200 * 0.016); // Move left
     }
-    
+
     @Override
     protected void onKeyDPress() {
         player.addX(200 * 0.016); // Move right
     }
-    
+
     public static void main(String[] args) {
         new SimplePlatformer();
     }
@@ -629,8 +637,8 @@ public class SimplePlatformer extends SideScrollBase {
 
 ## Version Information
 
-- **Current Version**: 1.6.0-alpha
-- **Build Date**: 2026-02-15
+- **Current Version**: 1.6.4-alpha
+- **Build Date**: 2026-03-1
 - **Framework**: Scope
 - **Language**: Java 16+
 - **Dependencies**: Java Swing (built-in)
@@ -647,6 +655,7 @@ public class SimplePlatformer extends SideScrollBase {
 6. **Performance**: Collision detection is O(n²) - keep entity count reasonable
 7. **Audio Format**: Use WAV files for best compatibility
 8. **Debug Mode**: Use `setHitBoxRender(true)` to visualize collision circles
+9. **The `launch()` Trigger**: Always ensure `launch()` is the **final statement** in your `init()` block. This ensures all entities and settings are fully loaded before the game loop starts.
 
 ---
 

@@ -1,4 +1,4 @@
-package scope.sideScroll;
+package scope.tapdown;
 
 public final class Camera {
     double x,y = 0;

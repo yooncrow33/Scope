@@ -1,19 +1,19 @@
 package scope;
 
 import scope.internal.facade.Access.ScopeEngineAccess;
-import scope.sideScroll.Camera;
-import scope.sideScroll.Entity;
-import scope.sideScroll.HudEntity;
+import scope.tapdown.Camera;
+import scope.tapdown.Entity;
+import scope.tapdown.HudEntity;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public abstract class SideScrollBase extends Base {
+public abstract class TopDownBase extends Base {
     final int WORLD_WIDTH;
     final int WORLD_HEIGHT;
 
-    public SideScrollBase(String title, int worldWidth, int worldHeight) {
+    public TopDownBase(String title, int worldWidth, int worldHeight) {
         super(title);
         this.WORLD_WIDTH = worldWidth;
         this.WORLD_HEIGHT = worldHeight;

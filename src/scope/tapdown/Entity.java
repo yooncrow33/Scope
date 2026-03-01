@@ -1,6 +1,6 @@
-package scope.sideScroll;
+package scope.tapdown;
 
-import scope.SideScrollBase;
+import scope.TopDownBase;
 
 import java.awt.*;
 
@@ -48,7 +48,7 @@ public abstract class Entity {
     public void addX(double value) { x += value;}
     public void addY(double value) { y += value;}
 
-    public void checkBound(SideScrollBase ssBase) {
+    public void checkBound(TopDownBase ssBase) {
         if (x > ssBase.MAX_X) {
             x = ssBase.MAX_X;
         } else if (x < ssBase.MIN_X) {
